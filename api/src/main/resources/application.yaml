@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: gestion_stock_api
+
+  config:
+    import: optional:file:api/.env[.properties]
+
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
