@@ -9,6 +9,7 @@ import com.nacimmkd.gestion_stock_api.exceptions.ProductAlreadyExistsException;
 import com.nacimmkd.gestion_stock_api.exceptions.ProductNotFoundException;
 import com.nacimmkd.gestion_stock_api.models.Category;
 import com.nacimmkd.gestion_stock_api.models.Product;
+import com.nacimmkd.gestion_stock_api.models.StockStatus;
 import com.nacimmkd.gestion_stock_api.repositories.CategoryRepository;
 import com.nacimmkd.gestion_stock_api.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +28,11 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
 
 
-    public Page<ProductSummaryDto> getAll(String search, UUID categoryId, Pageable pageable) {
+    public Page<ProductSummaryDto> getAll(String search, UUID categoryId, StockStatus status, Pageable pageable) {
         var spec = ProductSpecs.nameContains(search)
-                .and(ProductSpecs.hasCategory(categoryId));
+                .and(ProductSpecs.hasCategory(categoryId))
+                .and(ProductSpecs.hasStatus(status));
+
         return this.productRepository
                 .findAll(spec, pageable)
                 .map(ProductSummaryDto::of);

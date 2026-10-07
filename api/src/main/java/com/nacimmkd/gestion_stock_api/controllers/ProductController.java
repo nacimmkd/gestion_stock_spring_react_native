@@ -1,6 +1,7 @@
 package com.nacimmkd.gestion_stock_api.controllers;
 
 import com.nacimmkd.gestion_stock_api.dtos.*;
+import com.nacimmkd.gestion_stock_api.models.StockStatus;
 import com.nacimmkd.gestion_stock_api.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +26,13 @@ public class ProductController {
     public ResponseEntity<Page<ProductSummaryDto>> getProducts(
             @PageableDefault(size = 6) Pageable pageable,
             @RequestParam(required = false) String search,
-            @RequestParam(required = false) UUID categoryId
-    ) {
+            @RequestParam(required = false) UUID categoryId,
+            @RequestParam(required = false)StockStatus status
+            ) {
         return ResponseEntity.ok(this.productService.getAll(
                 search,
                 categoryId,
+                status,
                 pageable
         ));
     }
