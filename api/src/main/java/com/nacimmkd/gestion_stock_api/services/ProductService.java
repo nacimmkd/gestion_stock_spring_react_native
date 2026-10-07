@@ -67,11 +67,9 @@ public class ProductService {
         return ProductDetailsDto.of(this.productRepository.save(product));
     }
     
-    
     public void delete(UUID productId) {
         var product = getProductByIdOrThrow(productId);
-        product.delete();
-        this.productRepository.save(product);
+        this.productRepository.delete(product);
     }
 
 
