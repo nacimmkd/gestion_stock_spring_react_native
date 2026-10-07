@@ -5,6 +5,11 @@ spring:
   config:
     import: optional:file:api/.env[.properties]
 
+  sql:
+    init:
+      mode: always
+
+
   datasource:
     url: ${POSTGRES_URL}
     username: ${POSTGRES_USER}
@@ -13,3 +18,4 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    defer-datasource-initialization: true
