@@ -5,6 +5,7 @@ import com.nacimmkd.gestion_stock_api.dtos.ProductDetailsDto;
 import com.nacimmkd.gestion_stock_api.dtos.ProductSummaryDto;
 import com.nacimmkd.gestion_stock_api.dtos.ProductUpdateRequest;
 import com.nacimmkd.gestion_stock_api.exceptions.CategoryNotFoundException;
+import com.nacimmkd.gestion_stock_api.exceptions.ProductAlreadyExistsException;
 import com.nacimmkd.gestion_stock_api.exceptions.ProductNotFoundException;
 import com.nacimmkd.gestion_stock_api.models.Category;
 import com.nacimmkd.gestion_stock_api.models.Product;
@@ -41,6 +42,11 @@ public class ProductService {
 
     @Transactional
     public ProductDetailsDto create(ProductCreateRequest req) {
+
+        if (this.productRepository.existsByReference(req.reference())) {
+            throw new ProductAlreadyExistsException("Un produit avec cet référence existe déjà");
+        }
+
         var category = getCategoryByIdOrThrow(req.categoryId());
         var product = Product.create(
                 req.name(),
@@ -56,6 +62,10 @@ public class ProductService {
     @Transactional
     public ProductDetailsDto update(UUID productId, ProductUpdateRequest req) {
         var product = getProductByIdOrThrow(productId);
+
+        if (this.productRepository.existsByReferenceAndIdNot(req.reference(), product.getId())) {
+            throw new ProductAlreadyExistsException("Référence déjà utilisée");
+        }
         var category = getCategoryByIdOrThrow(req.categoryId());
         product.update(
                 req.name(),
@@ -82,6 +92,5 @@ public class ProductService {
         return this.categoryRepository.findById(req)
                 .orElseThrow(() -> new CategoryNotFoundException("Catégorie introuvable"));
     }
-
 
 }
