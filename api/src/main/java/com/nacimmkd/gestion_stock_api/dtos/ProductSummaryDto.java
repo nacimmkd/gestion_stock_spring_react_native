@@ -9,7 +9,7 @@ import java.util.UUID;
 public record ProductSummaryDto(
       UUID id,
       String name,
-      CategoryDto Category,
+      CategoryDto category,
       int quantity,
       int alertThreshold,
       StockStatus status
