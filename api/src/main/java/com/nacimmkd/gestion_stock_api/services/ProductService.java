@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -27,9 +26,11 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
 
 
-    public Page<ProductSummaryDto> getAll(Pageable pageable) {
+    public Page<ProductSummaryDto> getAll(String search, UUID categoryId, Pageable pageable) {
+        var spec = ProductSpecs.nameContains(search)
+                .and(ProductSpecs.hasCategory(categoryId));
         return this.productRepository
-                .findAll(pageable)
+                .findAll(spec, pageable)
                 .map(ProductSummaryDto::of);
     }
 

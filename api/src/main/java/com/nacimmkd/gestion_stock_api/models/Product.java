@@ -71,7 +71,6 @@ public class Product {
         this.description = description;
         this.category = category;
         this.alertThreshold = alertThreshold;
-        this.deletedAt = null;
     }
 
     public StockStatus getStatus() {

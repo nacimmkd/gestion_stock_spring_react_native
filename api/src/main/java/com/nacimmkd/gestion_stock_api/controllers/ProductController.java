@@ -23,9 +23,15 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<Page<ProductSummaryDto>> getProducts(
-            @PageableDefault(size = 6) Pageable pageable
+            @PageableDefault(size = 6) Pageable pageable,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) UUID categoryId
     ) {
-        return ResponseEntity.ok(this.productService.getAll(pageable));
+        return ResponseEntity.ok(this.productService.getAll(
+                search,
+                categoryId,
+                pageable
+        ));
     }
 
     @GetMapping("/{productId}")
