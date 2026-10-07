@@ -4,6 +4,7 @@ import com.nacimmkd.gestion_stock_api.dtos.ErrorDto;
 import com.nacimmkd.gestion_stock_api.exceptions.CategoryNotFoundException;
 import com.nacimmkd.gestion_stock_api.exceptions.ProductAlreadyExistsException;
 import com.nacimmkd.gestion_stock_api.exceptions.ProductNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -48,7 +50,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErrorDto> handleDataIntegrity() {
+    public ResponseEntity<ErrorDto> handleDataIntegrity(DataIntegrityViolationException ex) {
+        log.error("Violation de contrainte en base", ex);
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(new ErrorDto("Conflit avec une donnée existante"));
@@ -56,7 +59,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
-
         var errors = new HashMap<String, String>();
         ex.getBindingResult().getFieldErrors().forEach(err ->
             errors.put(err.getField(), err.getDefaultMessage())
