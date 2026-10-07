@@ -11,6 +11,8 @@ import com.nacimmkd.gestion_stock_api.models.Product;
 import com.nacimmkd.gestion_stock_api.repositories.CategoryRepository;
 import com.nacimmkd.gestion_stock_api.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,9 +27,10 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
 
 
-    public List<ProductSummaryDto> getAll() {
-        var products = this.productRepository.findAll();
-        return ProductSummaryDto.of(products);
+    public Page<ProductSummaryDto> getAll(Pageable pageable) {
+        return this.productRepository
+                .findAll(pageable)
+                .map(ProductSummaryDto::of);
     }
 
     public ProductDetailsDto getById(UUID productId) {

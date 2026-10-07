@@ -4,6 +4,9 @@ import com.nacimmkd.gestion_stock_api.dtos.*;
 import com.nacimmkd.gestion_stock_api.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -19,8 +22,10 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public ResponseEntity<List<ProductSummaryDto>> getProducts() {
-        return ResponseEntity.ok(this.productService.getAll());
+    public ResponseEntity<Page<ProductSummaryDto>> getProducts(
+            @PageableDefault(size = 6) Pageable pageable
+    ) {
+        return ResponseEntity.ok(this.productService.getAll(pageable));
     }
 
     @GetMapping("/{productId}")

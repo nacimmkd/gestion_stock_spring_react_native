@@ -2,10 +2,11 @@ package com.nacimmkd.gestion_stock_api.repositories;
 
 import com.nacimmkd.gestion_stock_api.models.Product;
 import org.jspecify.annotations.NonNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,7 +14,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
     @Override
     @EntityGraph(attributePaths = "category")
-    List<Product> findAll();
+    Page<Product> findAll(@NonNull Pageable pageable);
 
     @Override
     @EntityGraph(attributePaths = "category")
