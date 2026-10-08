@@ -9,9 +9,11 @@ export type ProductDetails = Schemas['ProductDetailsDto'];
 export type ProductPage = Schemas['PageProductSummaryDto'];
 export type CategoryCount = Schemas['CategoryCountDto'];
 export type Dashboard = Schemas['DashboardDto'];
-export type StockStatus = ProductSummary['status'];
+export type StockStatus = NonNullable<ProductSummary['status']>;
 export type ProductCreateRequest = Schemas['ProductCreateRequest'];
 export type ProductUpdateRequest = Schemas['ProductUpdateRequest'];
+export type StockUpdateRequest = Schemas['StockUpdateRequest'];
+export type StockMovement = 'ENTREE' | 'SORTIE';
 
 export type ApiError = { message: string };
 export type ValidationErrors = Record<string, string>;

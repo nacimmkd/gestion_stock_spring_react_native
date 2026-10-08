@@ -1,19 +1,13 @@
 import { Pressable, View, Text, StyleSheet } from 'react-native';
 import { type ProductSummary } from '../api/types';
+import StatusBadge from "./StatusBadge";
 
 type Props = {
     product: ProductSummary;
     onPress: () => void;
 };
 
-const STATUS_COLORS = {
-    NORMAL: { text: '#FFFFFF', background: '#374151' },
-    FAIBLE: { text: '#B45309', background: '#FEF3C7' },
-    RUPTURE: { text: '#B91C1C', background: '#FEE2E2' },
-};
-
 export default function ProductCard({ product, onPress }: Props) {
-    const statusColor = STATUS_COLORS[product.status ?? 'NORMAL'];
 
     return (
         <Pressable
@@ -22,9 +16,7 @@ export default function ProductCard({ product, onPress }: Props) {
         >
             <View style={styles.row}>
                 <Text style={styles.category}>{product.category?.name}</Text>
-                <View style={[styles.badge, { backgroundColor: statusColor.background }]}>
-                    <Text style={[styles.badgeText, { color: statusColor.text }]}>{product.status}</Text>
-                </View>
+                <StatusBadge status={product.status} />
             </View>
 
             <Text style={styles.name} numberOfLines={1}>
@@ -66,15 +58,6 @@ const styles = StyleSheet.create({
         color: '#6B7280',
         textTransform: 'uppercase',
         letterSpacing: 0.5,
-    },
-    badge: {
-        paddingHorizontal: 10,
-        paddingVertical: 4,
-        borderRadius: 999,
-    },
-    badgeText: {
-        fontSize: 12,
-        fontWeight: '600',
     },
     name: {
         fontSize: 17,

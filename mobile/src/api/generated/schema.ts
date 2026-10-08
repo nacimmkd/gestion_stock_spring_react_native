@@ -36,6 +36,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/products/{productId}/stock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["updateStock"];
+        trace?: never;
+    };
     "/api/v1/dashboard": {
         parameters: {
             query?: never;
@@ -113,6 +129,12 @@ export interface components {
             alertThreshold: number;
             description?: string;
         };
+        StockUpdateRequest: {
+            /** @enum {string} */
+            type: "ENTREE" | "SORTIE";
+            /** Format: int32 */
+            quantity: number;
+        };
         Pageable: {
             /** Format: int32 */
             page?: number;
@@ -126,14 +148,14 @@ export interface components {
             /** Format: int32 */
             totalPages?: number;
             pageable?: components["schemas"]["PageableObject"];
-            first?: boolean;
-            last?: boolean;
             /** Format: int32 */
             size?: number;
             content?: components["schemas"]["ProductSummaryDto"][];
             /** Format: int32 */
             number?: number;
             sort?: components["schemas"]["SortObject"];
+            first?: boolean;
+            last?: boolean;
             /** Format: int32 */
             numberOfElements?: number;
             empty?: boolean;
@@ -294,6 +316,32 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["ProductCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ProductDetailsDto"];
+                };
+            };
+        };
+    };
+    updateStock: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                productId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StockUpdateRequest"];
             };
         };
         responses: {

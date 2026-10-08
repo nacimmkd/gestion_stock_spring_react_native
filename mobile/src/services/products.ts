@@ -1,5 +1,12 @@
 import {api} from "../config/clinet";
-import {ProductCreateRequest, ProductDetails, ProductPage, ProductUpdateRequest, ProductFilters} from "../api/types";
+import {
+    ProductCreateRequest,
+    ProductDetails,
+    ProductPage,
+    ProductUpdateRequest,
+    ProductFilters,
+    StockMovement
+} from "../api/types";
 
 
 export async function getProducts(filters: ProductFilters = {}) {
@@ -24,4 +31,12 @@ export async function updateProduct(id: string, request: ProductUpdateRequest) {
 
 export async function deleteProduct(id: string) {
     await api.delete(`/products/${id}`);
+}
+
+export async function updateStock(
+    id: string,
+    request: { type: StockMovement; quantity: number }
+) {
+    const { data } = await api.patch<ProductDetails>(`/products/${id}/stock`, request);
+    return data;
 }

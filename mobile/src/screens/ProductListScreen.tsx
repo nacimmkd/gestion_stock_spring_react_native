@@ -6,6 +6,7 @@ import StatusFilter from "../components/StatusFilter";
 import {useEffect, useState} from "react";
 import {useFetch} from "../hooks/useFetch";
 import { getProducts } from "../services/products";
+import {useNavigation} from "@react-navigation/native";
 
 export default function ProductListScreen () {
 
@@ -17,6 +18,7 @@ export default function ProductListScreen () {
         () => getProducts({ search: search || undefined, status: filter ?? undefined, page }),
         [search, filter, page]
     );
+    const navigation = useNavigation();
     const hasMore = data ? !data.last : false;
 
     function handlePress(text: string): void {
@@ -58,7 +60,12 @@ export default function ProductListScreen () {
             <FlatList
                 data={products}
                 keyExtractor={(item) => item.id ?? ''}
-                renderItem={({ item }) => <ProductCard product={item} onPress={() => {}} />}
+                renderItem={({ item }) =>
+                    <ProductCard
+                        product={item}
+                        onPress={() => item.id && navigation.navigate('ProductDetails', { productId: item.id })}
+                    />
+                }
                 contentContainerStyle={styles.products}
                 showsVerticalScrollIndicator={false}
                 ListFooterComponent={
