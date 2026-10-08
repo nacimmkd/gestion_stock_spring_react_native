@@ -14,6 +14,7 @@ export type ProductCreateRequest = Schemas['ProductCreateRequest'];
 export type ProductUpdateRequest = Schemas['ProductUpdateRequest'];
 export type StockUpdateRequest = Schemas['StockUpdateRequest'];
 export type StockMovement = 'ENTREE' | 'SORTIE';
+export type PagedProduct = Schemas['PageProductSummaryDto'];
 
 export type ApiError = { message: string };
 export type ValidationErrors = Record<string, string>;

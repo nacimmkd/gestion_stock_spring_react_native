@@ -5,7 +5,7 @@ import SearchBar from '../components/SearchBar';
 import StatusFilter from "../components/StatusFilter";
 import {useEffect, useState} from "react";
 import {useFetch} from "../hooks/useFetch";
-import { getProducts } from "../services/products";
+import { getProducts } from "../services/products.service";
 import {useNavigation} from "@react-navigation/native";
 
 export default function ProductListScreen () {

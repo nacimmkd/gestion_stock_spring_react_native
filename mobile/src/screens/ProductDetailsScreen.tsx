@@ -11,7 +11,7 @@ import {
 import { useNavigation, type StaticScreenProps } from "@react-navigation/native";
 import type { ProductDetails, StockMovement } from "../api/types";
 import { useFetch } from "../hooks/useFetch";
-import { deleteProduct, getProduct, updateStock } from "../services/products";
+import { deleteProduct, getProduct, updateStock } from "../services/products.service";
 import ProductDetailsCard from "../components/ProductDetailsCard";
 import StatCard from "../components/StatCard";
 import AlertDialog from "../components/AlertDialog";
