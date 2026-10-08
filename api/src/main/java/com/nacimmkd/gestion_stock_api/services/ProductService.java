@@ -1,14 +1,12 @@
 package com.nacimmkd.gestion_stock_api.services;
 
-import com.nacimmkd.gestion_stock_api.dtos.ProductCreateRequest;
-import com.nacimmkd.gestion_stock_api.dtos.ProductDetailsDto;
-import com.nacimmkd.gestion_stock_api.dtos.ProductSummaryDto;
-import com.nacimmkd.gestion_stock_api.dtos.ProductUpdateRequest;
+import com.nacimmkd.gestion_stock_api.dtos.*;
 import com.nacimmkd.gestion_stock_api.exceptions.CategoryNotFoundException;
 import com.nacimmkd.gestion_stock_api.exceptions.ProductAlreadyExistsException;
 import com.nacimmkd.gestion_stock_api.exceptions.ProductNotFoundException;
 import com.nacimmkd.gestion_stock_api.models.Category;
 import com.nacimmkd.gestion_stock_api.models.Product;
+import com.nacimmkd.gestion_stock_api.models.StockMovementType;
 import com.nacimmkd.gestion_stock_api.models.StockStatus;
 import com.nacimmkd.gestion_stock_api.repositories.CategoryRepository;
 import com.nacimmkd.gestion_stock_api.repositories.ProductRepository;
@@ -78,6 +76,17 @@ public class ProductService {
                 req.alertThreshold()
         );
         return ProductDetailsDto.of(this.productRepository.save(product));
+    }
+
+    @Transactional
+    public ProductDetailsDto updateStock(UUID productId, StockUpdateRequest req) {
+        var product = getProductByIdOrThrow(productId);
+        if (req.type() == StockMovementType.ENTREE) {
+            product.addStock(req.quantity());
+        } else if (req.type() == StockMovementType.SORTIE) {
+            product.removeStock(req.quantity());
+        }
+        return ProductDetailsDto.of(this.productRepository.saveAndFlush(product));
     }
     
     public void delete(UUID productId) {

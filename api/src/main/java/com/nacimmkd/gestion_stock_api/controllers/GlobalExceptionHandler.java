@@ -2,6 +2,7 @@ package com.nacimmkd.gestion_stock_api.controllers;
 
 import com.nacimmkd.gestion_stock_api.dtos.ErrorDto;
 import com.nacimmkd.gestion_stock_api.exceptions.CategoryNotFoundException;
+import com.nacimmkd.gestion_stock_api.exceptions.InsufficientStockException;
 import com.nacimmkd.gestion_stock_api.exceptions.ProductAlreadyExistsException;
 import com.nacimmkd.gestion_stock_api.exceptions.ProductNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ProductAlreadyExistsException.class)
     public ResponseEntity<ErrorDto> handleProductAlreadyExists(ProductAlreadyExistsException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ErrorDto(ex.getMessage()));
+    }
+
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<ErrorDto> handleInsufficientStock(InsufficientStockException ex) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(new ErrorDto(ex.getMessage()));

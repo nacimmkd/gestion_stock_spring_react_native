@@ -1,5 +1,6 @@
 package com.nacimmkd.gestion_stock_api.models;
 
+import com.nacimmkd.gestion_stock_api.exceptions.InsufficientStockException;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -72,6 +73,18 @@ public class Product {
             return StockStatus.RUPTURE;
         }
         return quantity <= this.alertThreshold ? StockStatus.FAIBLE : StockStatus.NORMAL;
+    }
+
+    public void addStock(int amount) {
+        this.quantity += amount;
+    }
+
+    public void removeStock(int amount) {
+        if (amount > this.quantity) {
+            throw new InsufficientStockException(
+                    "Stock insuffisant : " + this.quantity + " en stock");
+        }
+        this.quantity -= amount;
     }
 
 }

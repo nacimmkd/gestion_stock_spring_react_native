@@ -68,6 +68,13 @@ public class ProductController {
         );
     }
 
+    @PatchMapping("/{productId}/stock")
+    public ResponseEntity<ProductDetailsDto> updateStock(
+            @PathVariable UUID productId,
+            @Valid @RequestBody StockUpdateRequest request) {
+        return ResponseEntity.ok(this.productService.updateStock(productId, request));
+    }
+
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(
             @PathVariable UUID productId) {
