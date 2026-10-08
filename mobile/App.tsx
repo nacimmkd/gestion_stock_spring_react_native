@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import ProductCard from './src/components/ProductCard';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { type ProductSummary } from './src/api/types';
+import ProductListScreen from "./src/screens/ProductListScreen";
 
 const product: ProductSummary = {
   id: '1',
@@ -18,9 +18,7 @@ const product: ProductSummary = {
 export default function App() {
   return (
       <SafeAreaProvider>
-        <SafeAreaView style={styles.container}>
-          <ProductCard product={product} onPress={() => {}} />
-        </SafeAreaView>
+        <ProductListScreen/>
       </SafeAreaProvider>
   );
 }
@@ -30,6 +28,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 16,
+    paddingRight: 10,
+    paddingLeft: 10,
     gap: 12,
     backgroundColor: '#F3F4F6',
   },

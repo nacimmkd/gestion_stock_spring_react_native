@@ -7,7 +7,7 @@ type Props = {
 };
 
 const STATUS_COLORS = {
-    NORMAL: { text: '#15803D', background: '#DCFCE7' },
+    NORMAL: { text: '#FFFFFF', background: '#374151' },
     FAIBLE: { text: '#B45309', background: '#FEF3C7' },
     RUPTURE: { text: '#B91C1C', background: '#FEE2E2' },
 };
