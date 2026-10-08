@@ -1,11 +1,8 @@
 import {StyleSheet, FlatList, View, Text, Pressable, ActivityIndicator} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import ProductCard from '../components/ProductCard';
 import {ProductSummary, StockStatus} from '../api/types';
+import ProductCard from '../components/ProductCard';
 import SearchBar from '../components/SearchBar';
-import Menu from '../components/Menu';
 import StatusFilter from "../components/StatusFilter";
-import Logo from "../components/Logo";
 import {useEffect, useState} from "react";
 import {useFetch} from "../hooks/useFetch";
 import { getProducts } from "../services/products";
@@ -45,9 +42,8 @@ export default function ProductListScreen () {
     }, [data]);
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             <View style={styles.header}>
-                <Logo/>
                 <SearchBar
                     onPress={handlePress}
                 />
@@ -81,12 +77,7 @@ export default function ProductListScreen () {
 
             />
 
-            <Menu
-                current={"products"}
-                onSelect={screen => {}}
-            />
-
-        </SafeAreaView>
+        </View>
     )
 }
 
@@ -94,12 +85,10 @@ export default function ProductListScreen () {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'space-between',
-        paddingHorizontal: 16,
-        paddingTop: 16,
-        paddingRight: 10,
-        paddingLeft: 10,
-        gap: 8,
+        paddingTop: 15,
+        paddingBottom: 5,
+        paddingHorizontal: 10,
+        gap: 2,
         backgroundColor: '#F3F4F6',
     },
 
@@ -108,7 +97,8 @@ const styles = StyleSheet.create({
     },
 
     header: {
-        gap: 12,
+        gap: 10,
+        paddingBottom: 10,
     },
 
     error: {

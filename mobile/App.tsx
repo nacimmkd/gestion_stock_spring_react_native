@@ -1,10 +1,7 @@
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import ProductListScreen from "./src/screens/ProductListScreen";
+import { Navigation } from './src/navigation';
 
 export default function App() {
   return (
-      <SafeAreaProvider>
-        <ProductListScreen/>
-      </SafeAreaProvider>
+      <Navigation />
   );
 }
