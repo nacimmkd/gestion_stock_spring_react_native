@@ -21,7 +21,7 @@ export default function ProductCard({ product, onPress }: Props) {
             style={({ pressed }) => [styles.container, pressed && styles.pressed]}
         >
             <View style={styles.row}>
-                <Text style={styles.category}>{product.Category?.name}</Text>
+                <Text style={styles.category}>{product.category?.name}</Text>
                 <View style={[styles.badge, { backgroundColor: statusColor.background }]}>
                     <Text style={[styles.badgeText, { color: statusColor.text }]}>{product.status}</Text>
                 </View>

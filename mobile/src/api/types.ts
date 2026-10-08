@@ -13,6 +13,12 @@ export type StockStatus = ProductSummary['status'];
 export type ProductCreateRequest = Schemas['ProductCreateRequest'];
 export type ProductUpdateRequest = Schemas['ProductUpdateRequest'];
 
-
 export type ApiError = { message: string };
 export type ValidationErrors = Record<string, string>;
+
+export interface ProductFilters {
+    search?: string;
+    status?: StockStatus;
+    page?: number;
+    size?: number;
+}

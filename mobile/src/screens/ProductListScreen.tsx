@@ -1,40 +1,47 @@
 import {StyleSheet, FlatList, View, Text} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProductCard from '../components/ProductCard';
-import { type ProductSummary } from '../api/types';
+import { StockStatus } from '../api/types';
 import SearchBar from '../components/SearchBar';
 import Menu from '../components/Menu';
 import StatusFilter from "../components/StatusFilter";
 import Logo from "../components/Logo";
-
-
-const products: ProductSummary[] = [
-    { id: '1', name: 'iPhone 12 Pro Max', quantity: 20, alertThreshold: 5, status: 'NORMAL', Category: { id: '1', name: 'Téléphone' } },
-    { id: '2', name: 'Samsung Galaxy S24', quantity: 3, alertThreshold: 5, status: 'FAIBLE', Category: { id: '1', name: 'Téléphone' } },
-    { id: '3', name: 'Google Pixel 8', quantity: 0, alertThreshold: 4, status: 'RUPTURE', Category: { id: '1', name: 'Téléphone' } },
-    { id: '4', name: 'MacBook Air M3', quantity: 12, alertThreshold: 3, status: 'NORMAL', Category: { id: '2', name: 'Ordinateurs' } },
-    { id: '5', name: 'Dell XPS 13', quantity: 2, alertThreshold: 3, status: 'FAIBLE', Category: { id: '2', name: 'Ordinateurs' } },
-];
+import {useState} from "react";
+import {useFetch} from "../hooks/useFetch";
+import { getProducts } from "../services/products";
 
 export default function ProductListScreen () {
+
+    const [search, setSearch] = useState<string>("");
+    const [filter, setFilter] = useState<StockStatus | null>(null);
+
+    const { data, loading, error } = useFetch(
+        () => getProducts({ search: search || undefined, status: filter ?? undefined }),
+        [search, filter]
+    );
+
+    function handlePress(text: string): void {
+        setFilter(null);
+        setSearch(text.trim());
+    }
+
     return (
         <SafeAreaView style={styles.container}>
-
             <View style={styles.header}>
                 <Logo/>
                 <SearchBar
-                    value={""}
-                    onChangeText={(value: string) => {}}
+                    onPress={handlePress}
                 />
                 <StatusFilter
-                    value={null}
-                    onChange={status => {}}
+                    value={filter}
+                    onChange={status => setFilter(status)}
                 />
             </View>
 
-
+            {loading && <Text>Chargement...</Text>}
+            {error && <Text style={styles.error}>{error}</Text>}
             <FlatList
-                data={products}
+                data={data?.content}
                 keyExtractor={(item) => item.id ?? ''}
                 renderItem={({ item }) => <ProductCard product={item} onPress={() => {}} />}
                 contentContainerStyle={styles.products}
@@ -69,5 +76,11 @@ const styles = StyleSheet.create({
 
     header: {
         gap: 12,
+    },
+
+    error: {
+        color: 'red',
+        fontSize: 20,
+        width: '100%',
     }
 });

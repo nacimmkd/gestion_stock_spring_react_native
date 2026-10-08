@@ -153,7 +153,7 @@ export interface components {
             /** Format: uuid */
             id?: string;
             name?: string;
-            Category?: components["schemas"]["CategoryDto"];
+            category?: components["schemas"]["CategoryDto"];
             /** Format: int32 */
             quantity?: number;
             /** Format: int32 */

@@ -1,31 +1,42 @@
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import {useState} from "react";
 
 type Props = {
-    value: string;
-    onChangeText: (text: string) => void;
+    onPress: (text: string) => void;
     placeholder?: string;
 };
 
 export default function SearchBar({
-                                      value,
-                                      onChangeText,
-                                      placeholder = 'Rechercher un produit',
-                                  }: Props) {
+          onPress,
+          placeholder = 'Rechercher par nom ou catégorie',
+}: Props) {
+
+    const [searchInput, setSearchInput] = useState<string>("");
+
+    function handleInputChange(text: string): void {
+        setSearchInput(text);
+    }
+
+    function handlePress(): void {
+        onPress(searchInput);
+    }
+
     return (
         <View style={styles.container}>
             <TextInput
                 style={styles.input}
-                value={value}
-                onChangeText={onChangeText}
+                value={searchInput}
+                onChangeText={handleInputChange}
                 placeholder={placeholder}
                 placeholderTextColor="#9CA3AF"
                 autoCapitalize="none"
                 autoCorrect={false}
                 returnKeyType="search"
+                onSubmitEditing={handlePress}
             />
             <Pressable
-                onPress={() => onChangeText('')}
+                onPress={handlePress}
                 accessibilityLabel="Effacer la recherche"
             >
                 <Ionicons name="search" size={20} color="#6B7280" />

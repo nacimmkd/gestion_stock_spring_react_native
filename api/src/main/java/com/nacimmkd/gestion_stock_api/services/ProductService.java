@@ -29,7 +29,7 @@ public class ProductService {
 
 
     public Page<ProductSummaryDto> getAll(String search, UUID categoryId, StockStatus status, Pageable pageable) {
-        var spec = ProductSpecs.nameContains(search)
+        var spec = ProductSpecs.nameOrCategoryContains(search)
                 .and(ProductSpecs.hasCategory(categoryId))
                 .and(ProductSpecs.hasStatus(status));
 

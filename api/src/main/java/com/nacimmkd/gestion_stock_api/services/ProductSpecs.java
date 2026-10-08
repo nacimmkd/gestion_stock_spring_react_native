@@ -11,10 +11,15 @@ public final class ProductSpecs {
 
     private ProductSpecs() {}
 
-    public static Specification<Product> nameContains(String search) {
+    public static Specification<Product> nameOrCategoryContains(String search) {
         return (root, query, cb) -> {
             if (search == null || search.isBlank()) return null;
-            return cb.like(cb.lower(root.get("name")), "%" + search.trim().toLowerCase() + "%");
+
+            var pattern = "%" + search.trim().toLowerCase() + "%";
+            return cb.or(
+                    cb.like(cb.lower(root.get("name")), pattern),
+                    cb.like(cb.lower(root.get("category").get("name")), pattern)
+            );
         };
     }
 
