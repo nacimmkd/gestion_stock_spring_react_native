@@ -7,8 +7,8 @@ import Button from "../components/Button";
 import AlertDialog from "../components/AlertDialog";
 import { useFetch } from "../hooks/useFetch";
 import type { Category } from "../api/types";
-import { getCategory } from "../services/category.service";
-import { createProduct } from "../services/products.service";
+import { getCategory } from "../services/CategoryService";
+import { createProduct } from "../services/ProductsService";
 import { productSchema } from "../validation/productSchema";
 
 type FormValues = {
@@ -76,11 +76,13 @@ export default function ProductCreateScreen() {
                 navigation.navigate("ProductDetails", { productId: product.id });
             }
         } catch (error: any) {
-            setMessage(error?.response?.data?.message ?? "L'enregistrement a échoué.");
+            setMessage(error.message);
         } finally {
             setSaving(false);
         }
     }
+
+
 
     return (
         <ScrollView
@@ -163,6 +165,7 @@ export default function ProductCreateScreen() {
                 message={message ?? ""}
                 onConfirm={() => setMessage(null)}
             />
+
         </ScrollView>
     );
 }

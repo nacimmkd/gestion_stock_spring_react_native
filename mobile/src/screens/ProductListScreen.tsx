@@ -5,8 +5,9 @@ import SearchBar from '../components/SearchBar';
 import StatusFilter from "../components/StatusFilter";
 import {useEffect, useState} from "react";
 import {useFetch} from "../hooks/useFetch";
-import { getProducts } from "../services/products.service";
+import { getProducts } from "../services/ProductsService";
 import {useNavigation} from "@react-navigation/native";
+import AlertDialog from "../components/AlertDialog";
 
 export default function ProductListScreen () {
 
@@ -14,6 +15,7 @@ export default function ProductListScreen () {
     const [search, setSearch] = useState<string>("");
     const [products, setProducts] = useState<ProductSummary[]>([]);
     const [filter, setFilter] = useState<StockStatus | null>(null);
+    const [message, setMessage] = useState<string | null>(null);
     const { data, loading, error } = useFetch(
         () => getProducts({ search: search || undefined, status: filter ?? undefined, page }),
         [search, filter, page]
@@ -43,6 +45,14 @@ export default function ProductListScreen () {
         });
     }, [data]);
 
+    useEffect(() => {
+        if (error) setMessage(error);
+    }, [error]);
+
+    if (loading) return (
+        <ActivityIndicator/>
+    );
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -55,8 +65,6 @@ export default function ProductListScreen () {
                 />
             </View>
 
-            {loading && <Text>Chargement...</Text>}
-            {error && <Text style={styles.error}>{error}</Text>}
             <FlatList
                 data={products}
                 keyExtractor={(item) => item.id ?? ''}
@@ -82,6 +90,13 @@ export default function ProductListScreen () {
                    ) : null
                 }
 
+            />
+
+            <AlertDialog
+                visible={message !== null}
+                title="Erreur"
+                message={message ?? ""}
+                onConfirm={() => setMessage(null)}
             />
 
         </View>

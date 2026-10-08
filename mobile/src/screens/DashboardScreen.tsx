@@ -3,7 +3,9 @@ import StatCard from "../components/StatCard";
 import CercleChart from "../components/CercleChart";
 import {useFetch} from "../hooks/useFetch";
 import {Dashboard} from "../api/types";
-import {getDashboard} from "../services/dashboard.service";
+import {getDashboard} from "../services/DashboardService";
+import {useEffect, useState} from "react";
+import AlertDialog from "../components/AlertDialog";
 
 
 const COLORS = ["#374151", "#FCD34D", "#FCA5A5", "#86EFAC", "#93C5FD", "#C4B5FD"];
@@ -14,12 +16,17 @@ export default function DashboardScreen() {
     const { data, loading, error } = useFetch<Dashboard>(
         () => getDashboard(), []
     );
+    const [message, setMessage] = useState<string | null>(null);
 
     const pieData = (data?.productsByCategory ?? []).map((item, index) => ({
         value: item.count ?? 0,
         color: COLORS[index % COLORS.length],
         label: item.category ?? "",
     }));
+
+    useEffect(() => {
+        if (error) setMessage(error);
+    }, [error]);
 
     if (loading) {
         return (
@@ -31,9 +38,12 @@ export default function DashboardScreen() {
 
     if (error || !data) {
         return (
-            <View style={styles.centered}>
-                <Text style={styles.error}>{error ?? "Données indisponibles"}</Text>
-            </View>
+            <AlertDialog
+                visible={message !== null}
+                title="Erreur"
+                message={message ?? ""}
+                onConfirm={() => setMessage(null)}
+            />
         );
     }
 

@@ -7,8 +7,8 @@ import Button from "../components/Button";
 import AlertDialog from "../components/AlertDialog";
 import { useFetch } from "../hooks/useFetch";
 import type { Category, ProductDetails } from "../api/types";
-import { getCategory } from "../services/category.service";
-import { getProduct, updateProduct } from "../services/products.service";
+import { getCategory } from "../services/CategoryService";
+import { getProduct, updateProduct } from "../services/ProductsService";
 import { productUpdateSchema } from "../validation/productSchema";
 
 type Props = StaticScreenProps<{ productId: string }>;
