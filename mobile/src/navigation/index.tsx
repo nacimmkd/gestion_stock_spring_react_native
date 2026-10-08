@@ -7,6 +7,7 @@ import DashboardScreen from "../screens/DashboardScreen";
 import ProductCreateScreen from "../screens/ProductCreateScreen";
 import {Feather} from "@expo/vector-icons";
 import Logo from "../components/Logo";
+import ProductUpdateScreen from "../screens/ProductUpdateRequest";
 
 const Tabs = createBottomTabNavigator({
     screenOptions: {
@@ -68,6 +69,10 @@ const Stack = createNativeStackNavigator({
         ProductDetails: {
             screen: ProductDetailsScreen,
             options: { title: 'Produit' },
+        },
+        ProductUpdate: {
+            screen: ProductUpdateScreen,
+            options: { title: "Modifier le produit" },
         },
     },
 });

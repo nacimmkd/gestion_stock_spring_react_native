@@ -141,11 +141,13 @@ export default function ProductDetailsScreen({ route }: Props) {
 
             {/* Actions sur le produit */}
             <View style={styles.column}>
-                <Button label="Modifier" onPress={() => {}} />
                 <Button
-                    label="Supprimer"
-                    variant="danger"
-                    onPress={() => setConfirmDelete(true)}
+                    label="Modifier"
+                    onPress={() => navigation.navigate("ProductUpdate", { productId })} />
+                <Button
+                label="Supprimer"
+                variant="danger"
+                      onPress={() => setConfirmDelete(true)}
                 />
             </View>
 

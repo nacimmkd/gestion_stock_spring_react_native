@@ -1,21 +1,22 @@
-import { useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useNavigation, type StaticScreenProps } from "@react-navigation/native";
 import TextField from "../components/TextField";
 import OptionPicker from "../components/OptionPicker";
 import Button from "../components/Button";
 import AlertDialog from "../components/AlertDialog";
 import { useFetch } from "../hooks/useFetch";
-import type { Category } from "../api/types";
+import type { Category, ProductDetails } from "../api/types";
 import { getCategory } from "../services/category.service";
-import { createProduct } from "../services/products.service";
-import { productSchema } from "../validation/productSchema";
+import { getProduct, updateProduct } from "../services/products.service";
+import { productUpdateSchema } from "../validation/productSchema";
+
+type Props = StaticScreenProps<{ productId: string }>;
 
 type FormValues = {
     name: string;
     reference: string;
     categoryId: string | null;
-    quantity: string;
     alertThreshold: string;
     description: string;
 };
@@ -26,20 +27,37 @@ const EMPTY_FORM: FormValues = {
     name: "",
     reference: "",
     categoryId: null,
-    quantity: "",
     alertThreshold: "",
     description: "",
 };
 
-export default function ProductCreateScreen() {
+
+function toFormValues(product: ProductDetails): FormValues {
+    return {
+        name: product.name ?? "",
+        reference: product.reference ?? "",
+        categoryId: product.category?.id ?? null,
+        alertThreshold: String(product.alertThreshold ?? ""),
+        description: product.description ?? "",
+    };
+}
+
+export default function ProductUpdateScreen({ route }: Props) {
+    const { productId } = route.params;
     const navigation = useNavigation();
 
+    const product = useFetch<ProductDetails>(() => getProduct(productId), [productId]);
     const categories = useFetch<Category[]>(() => getCategory(), []);
 
     const [values, setValues] = useState<FormValues>(EMPTY_FORM);
     const [errors, setErrors] = useState<FieldErrors>({});
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
+
+
+    useEffect(() => {
+        if (product.data) setValues(toFormValues(product.data));
+    }, [product.data]);
 
     const categoryOptions = (categories.data ?? [])
         .filter((category) => category.id)
@@ -54,7 +72,7 @@ export default function ProductCreateScreen() {
     }
 
     async function handleSubmit(): Promise<void> {
-        const result = productSchema.safeParse(values);
+        const result = productUpdateSchema.safeParse(values);
 
         if (!result.success) {
             const found: FieldErrors = {};
@@ -69,17 +87,29 @@ export default function ProductCreateScreen() {
         setErrors({});
         setSaving(true);
         try {
-            const product = await createProduct(result.data);
-
-            setValues(EMPTY_FORM);
-            if (product.id) {
-                navigation.navigate("ProductDetails", { productId: product.id });
-            }
+            await updateProduct(productId, result.data);
+            navigation.goBack();
         } catch (error: any) {
             setMessage(error?.response?.data?.message ?? "L'enregistrement a échoué.");
         } finally {
             setSaving(false);
         }
+    }
+
+    if (product.loading && !product.data) {
+        return (
+            <View style={styles.centered}>
+                <ActivityIndicator />
+            </View>
+        );
+    }
+
+    if (product.error || !product.data) {
+        return (
+            <View style={styles.centered}>
+                <Text style={styles.error}>{product.error ?? "Produit introuvable"}</Text>
+            </View>
+        );
     }
 
     return (
@@ -89,8 +119,6 @@ export default function ProductCreateScreen() {
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
         >
-            <Text style={styles.title}>Nouveau produit</Text>
-
             <View style={styles.card}>
                 <TextField
                     label="Nom"
@@ -120,28 +148,14 @@ export default function ProductCreateScreen() {
             </View>
 
             <View style={styles.card}>
-                <View style={styles.row}>
-                    <View style={styles.flex}>
-                        <TextField
-                            label="Quantité"
-                            value={values.quantity}
-                            onChangeText={(text) => setField("quantity", text)}
-                            placeholder="0"
-                            keyboardType="number-pad"
-                            error={errors.quantity}
-                        />
-                    </View>
-                    <View style={styles.flex}>
-                        <TextField
-                            label="Seuil d'alerte"
-                            value={values.alertThreshold}
-                            onChangeText={(text) => setField("alertThreshold", text)}
-                            placeholder="0"
-                            keyboardType="number-pad"
-                            error={errors.alertThreshold}
-                        />
-                    </View>
-                </View>
+                <TextField
+                    label="Seuil d'alerte"
+                    value={values.alertThreshold}
+                    onChangeText={(text) => setField("alertThreshold", text)}
+                    placeholder="0"
+                    keyboardType="number-pad"
+                    error={errors.alertThreshold}
+                />
             </View>
 
             <View style={styles.card}>
@@ -176,10 +190,15 @@ const styles = StyleSheet.create({
         padding: 16,
         gap: 12,
     },
-    title: {
-        fontSize: 22,
-        fontWeight: "700",
-        color: "#111827",
+    centered: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#F3F4F6",
+    },
+    error: {
+        color: "#B91C1C",
+        fontSize: 16,
     },
     card: {
         padding: 16,
@@ -188,12 +207,5 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#E5E7EB",
         backgroundColor: "#FFFFFF",
-    },
-    row: {
-        flexDirection: "row",
-        gap: 12,
-    },
-    flex: {
-        flex: 1,
     },
 });
