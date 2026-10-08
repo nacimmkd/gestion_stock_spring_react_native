@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import {useCallback, useState} from "react";
+import {useFocusEffect} from "@react-navigation/native";
 
 type FetchState<T> = {
     data: T | null;
@@ -11,27 +12,29 @@ export function useFetch<T>(fun: () => Promise<T>, deps: unknown[] = []): FetchS
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        let cancelled = false;
+    useFocusEffect(
+        useCallback(() => {
+            let cancelled = false;
 
-        setLoading(true);
-        setError(null);
+            setLoading(true);
+            setError(null);
 
-        fun()
-            .then((result) => {
-                if (!cancelled) setData(result);
-            })
-            .catch((e) => {
-                if (!cancelled) setError(e.message);
-            })
-            .finally(() => {
-                if (!cancelled) setLoading(false);
-            });
+            fun()
+                .then((result) => {
+                    if (!cancelled) setData(result);
+                })
+                .catch((e) => {
+                    if (!cancelled) setError(e.message);
+                })
+                .finally(() => {
+                    if (!cancelled) setLoading(false);
+                });
 
-        return () => {
-            cancelled = true;
-        };
-    }, deps);
+            return () => {
+                cancelled = true;
+            };
+        }, deps)
+    );
 
     return { data, loading, error };
 }
