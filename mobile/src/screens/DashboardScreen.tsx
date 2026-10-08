@@ -1,9 +1,111 @@
-import {View , Text} from "react-native";
+import {ActivityIndicator, ScrollView, StyleSheet, Text, View} from "react-native";
+import StatCard from "../components/StatCard";
+import CercleChart from "../components/CercleChart";
+import {useFetch} from "../hooks/useFetch";
+import {Dashboard} from "../api/types";
+import {getDashboard} from "../services/dashboard.service";
+
+
+const COLORS = ["#374151", "#FCD34D", "#FCA5A5", "#86EFAC", "#93C5FD", "#C4B5FD"];
+
 
 export default function DashboardScreen() {
+
+    const { data, loading, error } = useFetch<Dashboard>(
+        () => getDashboard(), []
+    );
+
+    const pieData = (data?.productsByCategory ?? []).map((item, index) => ({
+        value: item.count ?? 0,
+        color: COLORS[index % COLORS.length],
+        label: item.category ?? "",
+    }));
+
+    if (loading) {
+        return (
+            <View style={styles.centered}>
+                <ActivityIndicator />
+            </View>
+        );
+    }
+
+    if (error || !data) {
+        return (
+            <View style={styles.centered}>
+                <Text style={styles.error}>{error ?? "Données indisponibles"}</Text>
+            </View>
+        );
+    }
+
+
     return (
-        <View>
-            <Text>Dashboard</Text>
-        </View>
-    )
+        <ScrollView
+            style={styles.container}
+            contentContainerStyle={styles.content}
+            showsVerticalScrollIndicator={false}
+        >
+            <Text style={styles.title}>Tableau de bord</Text>
+
+            <View style={styles.row}>
+                <StatCard value={data.totalProducts} label="Produits" />
+                <StatCard value={data.totalQuantity} label="Unités en stock" />
+            </View>
+            <View style={styles.row}>
+                <StatCard value={data.outOfStock} label="En rupture" />
+                <StatCard value={data.lowStock} label="Stock faible" />
+            </View>
+
+            <View style={styles.card}>
+                <Text style={styles.sectionTitle}>Produits par catégorie</Text>
+                <CercleChart
+                    data={pieData}
+                    total={data.totalProducts}
+                    centerLabel="produits"
+                />
+            </View>
+        </ScrollView>
+    );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#F3F4F6",
+    },
+    content: {
+        padding: 16,
+        gap: 12,
+    },
+    centered: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#F3F4F6",
+    },
+    error: {
+        color: "#B91C1C",
+        fontSize: 16,
+    },
+    title: {
+        fontSize: 22,
+        fontWeight: "700",
+        color: "#111827",
+    },
+    row: {
+        flexDirection: "row",
+        gap: 12,
+    },
+    card: {
+        padding: 16,
+        gap: 14,
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: "#E5E7EB",
+        backgroundColor: "#FFFFFF",
+    },
+    sectionTitle: {
+        fontSize: 14,
+        fontWeight: "600",
+        color: "#111827",
+    },
+});

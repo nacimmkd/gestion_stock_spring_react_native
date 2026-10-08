@@ -148,14 +148,14 @@ export interface components {
             /** Format: int32 */
             totalPages?: number;
             pageable?: components["schemas"]["PageableObject"];
+            first?: boolean;
+            last?: boolean;
             /** Format: int32 */
             size?: number;
             content?: components["schemas"]["ProductSummaryDto"][];
             /** Format: int32 */
             number?: number;
             sort?: components["schemas"]["SortObject"];
-            first?: boolean;
-            last?: boolean;
             /** Format: int32 */
             numberOfElements?: number;
             empty?: boolean;
@@ -198,6 +198,8 @@ export interface components {
             totalProducts?: number;
             /** Format: int64 */
             totalQuantity?: number;
+            /** Format: int64 */
+            normalStock?: number;
             /** Format: int64 */
             outOfStock?: number;
             /** Format: int64 */

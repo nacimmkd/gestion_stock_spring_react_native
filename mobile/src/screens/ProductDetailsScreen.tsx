@@ -123,14 +123,13 @@ export default function ProductDetailsScreen({ route }: Props) {
                 <View style={styles.row}>
                     <Button
                         label="+ Entrée"
-                        variant="success"
                         onPress={() => handleStock("ENTREE")}
                         disabled={saving}
                         style={styles.flex}
                     />
                     <Button
                         label="− Sortie"
-                        variant="warning"
+                        variant="danger"
                         onPress={() => handleStock("SORTIE")}
                         disabled={saving}
                         style={styles.flex}
@@ -141,16 +140,13 @@ export default function ProductDetailsScreen({ route }: Props) {
             <Text style={styles.updatedAt}>Mis à jour le {updatedAt}</Text>
 
             {/* Actions sur le produit */}
-            <View style={styles.row}>
-                <Pressable style={[styles.button, styles.buttonPrimary]} onPress={() => {}}>
-                    <Text style={styles.buttonPrimaryText}>Modifier</Text>
-                </Pressable>
-                <Pressable
-                    style={[styles.button, styles.buttonDanger]}
+            <View style={styles.column}>
+                <Button label="Modifier" onPress={() => {}} />
+                <Button
+                    label="Supprimer"
+                    variant="danger"
                     onPress={() => setConfirmDelete(true)}
-                >
-                    <Text style={styles.buttonDangerText}>Supprimer</Text>
-                </Pressable>
+                />
             </View>
 
             {/* Confirmation de suppression */}
@@ -181,6 +177,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#F3F4F6",
     },
     content: {
+        flexGrow: 1,
         padding: 16,
         gap: 12,
     },
@@ -199,6 +196,13 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         gap: 12,
     },
+
+    column: {
+        marginTop: "auto",
+        gap: 10,
+        paddingBottom: 12
+    },
+
     card: {
         padding: 16,
         gap: 10,
@@ -227,43 +231,6 @@ const styles = StyleSheet.create({
         textAlign: "center",
     },
 
-    button: {
-        flex: 1,
-        alignItems: "center",
-        paddingVertical: 14,
-        borderRadius: 12,
-    },
-    buttonDisabled: {
-        opacity: 0.5,
-    },
-    buttonIn: {
-        backgroundColor: "#DCFCE7",
-    },
-    buttonInText: {
-        color: "#15803D",
-        fontWeight: "600",
-    },
-    buttonOut: {
-        backgroundColor: "#FEF3C7",
-    },
-    buttonOutText: {
-        color: "#B45309",
-        fontWeight: "600",
-    },
-    buttonPrimary: {
-        backgroundColor: "#374151",
-    },
-    buttonPrimaryText: {
-        color: "#FFFFFF",
-        fontWeight: "600",
-    },
-    buttonDanger: {
-        backgroundColor: "#FEE2E2",
-    },
-    buttonDangerText: {
-        color: "#B91C1C",
-        fontWeight: "600",
-    },
     flex: {
         flex: 1,
     },

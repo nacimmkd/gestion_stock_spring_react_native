@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
         color: "#111827",
     },
     separator: {
-        height: 1,
+        height: 5,
         backgroundColor: "#E5E7EB",
     },
     sectionTitle: {
