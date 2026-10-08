@@ -33,6 +33,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpec
     @Query("""
         SELECT COUNT(p) AS totalProducts,
                COALESCE(SUM(p.quantity), 0) AS totalQuantity,
+               COUNT(p) FILTER (WHERE p.quantity > p.alertThreshold) AS normalStock,
                COUNT(p) FILTER (WHERE p.quantity = 0) AS outOfStock,
                COUNT(p) FILTER (WHERE p.quantity > 0 AND p.quantity <= p.alertThreshold) AS lowStock
         FROM Product p

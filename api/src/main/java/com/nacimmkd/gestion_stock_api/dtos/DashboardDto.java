@@ -8,6 +8,7 @@ import java.util.List;
 public record DashboardDto(
         long totalProducts,
         long totalQuantity,
+        long normalStock,
         long outOfStock,
         long lowStock,
         List<CategoryCountDto> productsByCategory
@@ -17,6 +18,7 @@ public record DashboardDto(
         return new DashboardDto(
                 stockStats.getTotalProducts(),
                 stockStats.getTotalQuantity(),
+                stockStats.getNormalStock(),
                 stockStats.getOutOfStock(),
                 stockStats.getLowStock(),
                 CategoryCountDto.of(categoryCounts)
