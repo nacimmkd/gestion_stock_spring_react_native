@@ -1,20 +1,36 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import ProductCard from './src/components/ProductCard';
+import { type ProductSummary } from './src/api/types';
+
+const product: ProductSummary = {
+  id: '1',
+  name: 'iPhone 12 Pro Max',
+  quantity: 20,
+  alertThreshold: 5,
+  status: 'FAIBLE',
+  Category: {
+    id: '1',
+    name: 'Téléphone',
+  },
+};
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+      <SafeAreaProvider>
+        <SafeAreaView style={styles.container}>
+          <ProductCard product={product} onPress={() => {}} />
+        </SafeAreaView>
+      </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    gap: 12,
+    backgroundColor: '#F3F4F6',
   },
 });
