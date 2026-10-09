@@ -40,3 +40,8 @@ export async function updateStock(
     const { data } = await api.patch<ProductDetails>(`/products/${id}/stock`, request);
     return data;
 }
+
+export async function countOutOfStock(): Promise<number> {
+    const { data } = await api.get<number>(`/products/out-of-stock/count`);
+    return data;
+}
