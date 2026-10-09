@@ -1,108 +1,52 @@
-import {StyleSheet, FlatList, View, Text, Pressable, ActivityIndicator} from 'react-native';
-import {ProductSummary, StockStatus} from '../../../shared/api/types';
-import ProductCard from '../components/ProductCard';
-import SearchBar from '../../../shared/components/SearchBar';
+import { ActivityIndicator, FlatList, StyleSheet, Text, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import SearchBar from "../../../shared/components/SearchBar";
+import Button from "../../../shared/components/Button";
+import Error from "../../../shared/components/Error";
+import type { ProductSummary } from "../../../shared/api/types";
+import ProductCard from "../components/ProductCard";
 import StatusFilter from "../components/StatusFilter";
-import {useEffect, useState} from "react";
-import {useFetch} from "../../../shared/hooks/useFetch";
-import { getProducts } from "../api";
-import {useNavigation} from "@react-navigation/native";
-import AlertDialog from "../../../shared/components/AlertDialog";
+import { useProductList } from "../hooks/useProductList";
 
-export default function ProductListScreen () {
-
-    const [page, setPage] = useState(0);
-    const [search, setSearch] = useState<string>("");
-    const [products, setProducts] = useState<ProductSummary[]>([]);
-    const [filter, setFilter] = useState<StockStatus | null>(null);
-    const [message, setMessage] = useState<string | null>(null);
-    const { data, loading, error } = useFetch(
-        () => getProducts({ search: search || undefined, status: filter ?? undefined, page }),
-        [search, filter, page]
-    );
+export default function ProductListScreen() {
     const navigation = useNavigation();
-    const hasMore = data ? !data.last : false;
+    const list = useProductList();
 
-    function handlePress(text: string): void {
-        setFilter(null);
-        setSearch(text.trim());
-        setPage(0);
+    function openProduct(product: ProductSummary): void {
+        if (product.id) navigation.navigate("ProductDetails", { productId: product.id });
     }
-
-    function handleFilterChange(status: StockStatus | null): void {
-        setFilter(status);
-        setPage(0);
-    }
-
-    useEffect(() => {
-        if (!data) return;
-        const content: ProductSummary[] = data.content ?? [];
-
-        setProducts(previous => {
-            if (data.number === 0) return content;
-            const ids = new Set(previous.map(product => product.id));
-            return [...previous, ...content.filter(product => !ids.has(product.id))];
-        });
-    }, [data]);
-
-    useEffect(() => {
-        if (error) setMessage(error);
-    }, [error]);
-
-    if (loading) return (
-        <ActivityIndicator/>
-    );
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <SearchBar
-                    onPress={handlePress}
-                />
-                <StatusFilter
-                    value={filter}
-                    onChange={handleFilterChange}
-                />
+                <SearchBar onPress={list.searchFor} />
+                <StatusFilter value={list.status} onChange={list.filterBy} />
             </View>
 
             <FlatList
-                data={products}
-                keyExtractor={(item) => item.id ?? ''}
-                renderItem={({ item }) =>
-                    <ProductCard
-                        product={item}
-                        onPress={() => item.id && navigation.navigate('ProductDetails', { productId: item.id })}
-                    />
-                }
+                data={list.products}
+                keyExtractor={(item) => item.id ?? ""}
+                renderItem={({ item }) => (
+                    <ProductCard product={item} onPress={() => openProduct(item)} />
+                )}
                 contentContainerStyle={styles.products}
                 showsVerticalScrollIndicator={false}
-                ListFooterComponent={
-                   hasMore ? (
-                        <Pressable
-                            style={styles.loadMore}
-                            onPress={() => setPage(page + 1)}
-                            disabled={loading}
-                        >
-                            {loading
-                                ? <ActivityIndicator color="#FFFFFF" />
-                                : <Text style={styles.loadMoreText}>Charger plus</Text>}
-                        </Pressable>
-                   ) : null
+                ListEmptyComponent={
+                    list.loading
+                        ? <ActivityIndicator color="#374151" />
+                        : <Text style={styles.empty}>Aucun produit trouvé</Text>
                 }
-
+                ListFooterComponent={
+                    list.hasMore
+                        ? <Button label="Charger plus" onPress={list.loadMore} loading={list.loading} />
+                        : null
+                }
             />
 
-            <AlertDialog
-                visible={message !== null}
-                title="Erreur"
-                message={message ?? ""}
-                onConfirm={() => setMessage(null)}
-            />
-
+            <Error error={list.error} />
         </View>
-    )
+    );
 }
-
 
 const styles = StyleSheet.create({
     container: {
@@ -111,32 +55,18 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
         paddingHorizontal: 10,
         gap: 2,
-        backgroundColor: '#F3F4F6',
+        backgroundColor: "#F3F4F6",
     },
-
-    products: {
-        gap: 4
-    },
-
     header: {
         gap: 10,
         paddingBottom: 10,
     },
-
-    error: {
-        color: 'red',
-        fontSize: 20,
-        width: '100%',
+    products: {
+        gap: 4,
     },
-
-    loadMore: {
-        alignItems: 'center',
-        paddingVertical: 12,
-        borderRadius: 12,
-        backgroundColor: '#374151',
-    },
-    loadMoreText: {
-        color: '#FFFFFF',
-        fontWeight: '600',
+    empty: {
+        paddingVertical: 24,
+        textAlign: "center",
+        color: "#6B7280",
     },
 });

@@ -16,7 +16,8 @@
     "react-native-gifted-charts": "^1.4.81",
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "~4.26.0",
-    "react-native-svg": "15.15.4"
+    "react-native-svg": "15.15.4",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@types/react": "~19.2.2",

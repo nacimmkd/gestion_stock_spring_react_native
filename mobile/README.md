@@ -89,7 +89,7 @@ src/
 │   └── categories/     Appel API des catégories
 ├── shared/
 │   ├── api/            Client Axios, types et schéma généré
-│   ├── components/     Composants réutilisables (Button, TextField, AlertDialog…)
+│   ├── components/     Composants réutilisables (Button, TextField, Dialog…)
 │   └── hooks/          useFetch
 └── navigation/         Onglets et pile d'écrans
 ```

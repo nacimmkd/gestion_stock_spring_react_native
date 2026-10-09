@@ -1,66 +1,47 @@
-import { useState } from "react";
-import {
-    ActivityIndicator,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
-} from "react-native";
+import { useEffect, useState } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useNavigation, type StaticScreenProps } from "@react-navigation/native";
-import type { ProductDetails, StockMovement } from "../../../shared/api/types";
-import { useFetch } from "../../../shared/hooks/useFetch";
-import { deleteProduct, getProduct, updateStock } from "../api";
-import ProductDetailsCard from "../components/ProductDetailsCard";
 import StatCard from "../../../shared/components/StatCard";
-import AlertDialog from "../../../shared/components/AlertDialog";
 import Button from "../../../shared/components/Button";
+import Dialog from "../../../shared/components/Dialog";
+import LoadingState from "../../../shared/components/LoadingState";
+import Error from "../../../shared/components/Error";
+import { useFetch } from "../../../shared/hooks/useFetch";
+import type { ProductDetails, StockMovement } from "../../../shared/api/types";
+import ProductDetailsCard from "../components/ProductDetailsCard";
+import StockMovementForm from "../components/StockMovementForm";
+import { deleteProduct, getProduct, updateStock } from "../api";
 
 type Props = StaticScreenProps<{ productId: string }>;
 
-type Message = {
-    title: string;
-    text: string;
-};
+function formatDate(date?: string): string {
+    return date ? new Date(date).toLocaleDateString("fr-FR") : "—";
+}
 
 export default function ProductDetailsScreen({ route }: Props) {
     const { productId } = route.params;
     const navigation = useNavigation();
 
-    const { data, loading, error } = useFetch(
-        () => getProduct(productId),
-        [productId]
-    );
+    const { data, loading, error } = useFetch(() => getProduct(productId), [productId]);
 
     const [updated, setUpdated] = useState<ProductDetails | null>(null);
-    const [amount, setAmount] = useState("");
-    const [saving, setSaving] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
-    const [message, setMessage] = useState<Message | null>(null);
+    const [message, setMessage] = useState<string | null>(null);
+
+
+    useEffect(() => {
+        setUpdated(null);
+    }, [data]);
+
     const product = updated ?? data;
 
-    async function handleStock(type: StockMovement): Promise<void> {
-        const quantity = Number.parseInt(amount, 10);
-        if (!Number.isInteger(quantity) || quantity <= 0) {
-            setMessage({
-                title: "Quantité invalide",
-                text: "Saisis un nombre entier supérieur à 0.",
-            });
-            return;
-        }
-
-        setSaving(true);
+    async function handleStock(type: StockMovement, quantity: number): Promise<boolean> {
         try {
             setUpdated(await updateStock(productId, { type, quantity }));
-            setAmount("");
+            return true;
         } catch (e: any) {
-            setMessage({
-                title: "Erreur",
-                text: e?.response?.data?.message ?? "La mise à jour du stock a échoué.",
-            });
-        } finally {
-            setSaving(false);
+            setMessage(e.message);
+            return false;
         }
     }
 
@@ -69,33 +50,13 @@ export default function ProductDetailsScreen({ route }: Props) {
         try {
             await deleteProduct(productId);
             navigation.goBack();
-        } catch {
-            setMessage({
-                title: "Erreur",
-                text: "La suppression a échoué.",
-            });
+        } catch (e: any) {
+            setMessage(e.message);
         }
     }
 
-    if (loading) {
-        return (
-            <View style={styles.centered}>
-                <ActivityIndicator />
-            </View>
-        );
-    }
-
-    if (error || !product) {
-        return (
-            <View style={styles.centered}>
-                <Text style={styles.error}>{error ?? "Produit introuvable"}</Text>
-            </View>
-        );
-    }
-
-    const updatedAt = product.updatedAt
-        ? new Date(product.updatedAt).toLocaleDateString("fr-FR")
-        : "—";
+    if (loading && !product) return <LoadingState />;
+    if (!product) return <Error error={error ?? "Produit introuvable"} />;
 
     return (
         <ScrollView
@@ -110,49 +71,23 @@ export default function ProductDetailsScreen({ route }: Props) {
                 <StatCard value={product.alertThreshold} label="Seuil d'alerte" />
             </View>
 
-            <View style={styles.card}>
-                <Text style={styles.sectionTitle}>Mouvement de stock</Text>
-                <TextInput
-                    style={styles.input}
-                    value={amount}
-                    onChangeText={setAmount}
-                    placeholder="Quantité"
-                    placeholderTextColor="#9CA3AF"
-                    keyboardType="number-pad"
-                />
-                <View style={styles.row}>
-                    <Button
-                        label="+ Entrée"
-                        onPress={() => handleStock("ENTREE")}
-                        disabled={saving}
-                        style={styles.flex}
-                    />
-                    <Button
-                        label="− Sortie"
-                        variant="danger"
-                        onPress={() => handleStock("SORTIE")}
-                        disabled={saving}
-                        style={styles.flex}
-                    />
-                </View>
-            </View>
+            <StockMovementForm onSubmit={handleStock} />
 
-            <Text style={styles.updatedAt}>Mis à jour le {updatedAt}</Text>
+            <Text style={styles.updatedAt}>Mis à jour le {formatDate(product.updatedAt)}</Text>
 
-            {/* Actions sur le produit */}
-            <View style={styles.column}>
+            <View style={styles.actions}>
                 <Button
                     label="Modifier"
-                    onPress={() => navigation.navigate("ProductUpdate", { productId })} />
+                    onPress={() => navigation.navigate("ProductUpdate", { productId })}
+                />
                 <Button
-                label="Supprimer"
-                variant="danger"
-                      onPress={() => setConfirmDelete(true)}
+                    label="Supprimer"
+                    variant="danger"
+                    onPress={() => setConfirmDelete(true)}
                 />
             </View>
 
-            {/* Confirmation de suppression */}
-            <AlertDialog
+            <Dialog
                 visible={confirmDelete}
                 title="Supprimer le produit"
                 message="Cette action est définitive."
@@ -162,11 +97,10 @@ export default function ProductDetailsScreen({ route }: Props) {
                 onConfirm={handleDelete}
             />
 
-            {/* Messages d'erreur */}
-            <AlertDialog
+            <Dialog
                 visible={message !== null}
-                title={message?.title ?? ""}
-                message={message?.text}
+                title="Erreur"
+                message={message ?? ""}
                 onConfirm={() => setMessage(null)}
             />
         </ScrollView>
@@ -183,57 +117,18 @@ const styles = StyleSheet.create({
         padding: 16,
         gap: 12,
     },
-    centered: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#F3F4F6",
-    },
-    error: {
-        color: "#B91C1C",
-        fontSize: 16,
-    },
-
     row: {
         flexDirection: "row",
         gap: 12,
-    },
-
-    column: {
-        marginTop: "auto",
-        gap: 10,
-        paddingBottom: 12
-    },
-
-    card: {
-        padding: 16,
-        gap: 10,
-        borderRadius: 12,
-        borderWidth: 1,
-        borderColor: "#E5E7EB",
-        backgroundColor: "#FFFFFF",
-    },
-    sectionTitle: {
-        fontSize: 14,
-        fontWeight: "600",
-        color: "#111827",
-    },
-    input: {
-        paddingHorizontal: 14,
-        paddingVertical: 12,
-        borderRadius: 12,
-        borderWidth: 1,
-        borderColor: "#E5E7EB",
-        fontSize: 16,
-        color: "#111827",
     },
     updatedAt: {
         fontSize: 12,
         color: "#9CA3AF",
         textAlign: "center",
     },
-
-    flex: {
-        flex: 1,
+    actions: {
+        marginTop: "auto",
+        gap: 10,
+        paddingBottom: 12,
     },
 });

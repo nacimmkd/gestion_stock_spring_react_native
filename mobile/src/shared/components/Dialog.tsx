@@ -11,16 +11,16 @@ type Props = {
     onCancel?: () => void;
 };
 
-export default function AlertDialog({
-                                        visible,
-                                        title,
-                                        message,
-                                        confirmLabel = "OK",
-                                        cancelLabel = "Annuler",
-                                        destructive = false,
-                                        onConfirm,
-                                        onCancel,
-                                    }: Props) {
+export default function Dialog({
+        visible,
+        title,
+        message,
+        confirmLabel = "OK",
+        cancelLabel = "Annuler",
+        destructive = false,
+        onConfirm,
+        onCancel,
+}: Props) {
     return (
         <Modal
             visible={visible}

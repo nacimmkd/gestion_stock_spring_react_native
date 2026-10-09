@@ -7,7 +7,7 @@ import DashboardScreen from "../features/dashboard/screens/DashboardScreen";
 import ProductCreateScreen from "../features/products/screens/ProductCreateScreen";
 import {Feather} from "@expo/vector-icons";
 import Logo from "../shared/components/Logo";
-import ProductUpdateScreen from "../features/products/screens/ProductUpdateRequest";
+import ProductUpdateScreen from "../features/products/screens/ProductUpdateScreen";
 
 const Tabs = createBottomTabNavigator({
     screenOptions: {

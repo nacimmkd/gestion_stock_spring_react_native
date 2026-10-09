@@ -1,25 +1,39 @@
-import { useState } from "react";
-import { ScrollView, StyleSheet, Text } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import { ScrollView, StyleSheet } from "react-native";
+import { useNavigation, type StaticScreenProps } from "@react-navigation/native";
 import Button from "../../../shared/components/Button";
 import Dialog from "../../../shared/components/Dialog";
+import LoadingState from "../../../shared/components/LoadingState";
+import Error from "../../../shared/components/Error";
+import { useFetch } from "../../../shared/hooks/useFetch";
 import ProductForm from "../components/ProductFrom";
-import { createProduct } from "../api";
-import { schema } from "../schema";
+import { getProduct, updateProduct } from "../api";
+import { productUpdateSchema } from "../schema";
 import {
     EMPTY_PRODUCT_FORM,
     toFormErrors,
+    toFormValues,
     type ProductFormErrors,
     type ProductFormValues,
 } from "../form";
 
-export default function ProductCreateScreen() {
+type Props = StaticScreenProps<{ productId: string }>;
+
+export default function ProductUpdateScreen({ route }: Props) {
+    const { productId } = route.params;
     const navigation = useNavigation();
+
+    const product = useFetch(() => getProduct(productId), [productId]);
 
     const [values, setValues] = useState(EMPTY_PRODUCT_FORM);
     const [errors, setErrors] = useState<ProductFormErrors>({});
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
+
+
+    useEffect(() => {
+        if (product.data) setValues(toFormValues(product.data));
+    }, [product.data]);
 
     function handleChange<K extends keyof ProductFormValues>(
         field: K,
@@ -30,7 +44,7 @@ export default function ProductCreateScreen() {
     }
 
     async function handleSubmit(): Promise<void> {
-        const result = schema.safeParse(values);
+        const result = productUpdateSchema.safeParse(values);
 
         if (!result.success) {
             setErrors(toFormErrors(result.error));
@@ -40,18 +54,17 @@ export default function ProductCreateScreen() {
         setErrors({});
         setSaving(true);
         try {
-            const product = await createProduct(result.data);
-
-            setValues(EMPTY_PRODUCT_FORM);
-            if (product.id) {
-                navigation.navigate("ProductDetails", { productId: product.id });
-            }
+            await updateProduct(productId, result.data);
+            navigation.goBack();
         } catch (error: any) {
             setMessage(error.message);
         } finally {
             setSaving(false);
         }
     }
+
+    if (product.loading && !product.data) return <LoadingState />;
+    if (!product.data) return <Error error={product.error ?? "Produit introuvable"} />;
 
     return (
         <ScrollView
@@ -60,9 +73,12 @@ export default function ProductCreateScreen() {
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
         >
-            <Text style={styles.title}>Nouveau produit</Text>
-
-            <ProductForm values={values} errors={errors} onChange={handleChange} />
+            <ProductForm
+                values={values}
+                errors={errors}
+                onChange={handleChange}
+                withQuantity={false}
+            />
 
             <Button label="Enregistrer" onPress={handleSubmit} loading={saving} />
 
@@ -84,10 +100,5 @@ const styles = StyleSheet.create({
     content: {
         padding: 16,
         gap: 12,
-    },
-    title: {
-        fontSize: 22,
-        fontWeight: "700",
-        color: "#111827",
     },
 });

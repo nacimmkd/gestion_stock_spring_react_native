@@ -1,49 +1,47 @@
 import { StyleSheet, Text, View } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
 
-type Props = {
-    data: { value: number; color: string; label: string }[];
-    total?: number;
-    centerLabel?: string;
-    radius?: number;
-    innerRadius?: number;
+export type ChartSlice = {
+    label: string;
+    value: number;
+    color: string;
 };
 
-export default function CercleChart({
-           data,
-           total,
-           centerLabel,
-           radius = 70,
-           innerRadius = 45,
-}: Props) {
-    return (
-        <View style={styles.chart}>
+type Props = {
+    data: ChartSlice[];
+    total?: number;
+    centerLabel?: string;
+};
 
+const RADIUS = 70;
+const INNER_RADIUS = 45;
+
+export default function DonutChart({ data, total, centerLabel }: Props) {
+    const sum = total ?? data.reduce((acc, slice) => acc + slice.value, 0);
+
+    return (
+        <View style={styles.container}>
             <View style={styles.pie}>
                 <PieChart
                     data={data}
                     donut
-                    radius={radius}
-                    innerRadius={innerRadius}
+                    radius={RADIUS}
+                    innerRadius={INNER_RADIUS}
                     centerLabelComponent={() => (
-                        <View style={styles.chartCenter}>
-                            <Text style={styles.chartTotal}>{total}</Text>
-                            {centerLabel ? (
-                                <Text style={styles.chartTotalLabel}>{centerLabel}</Text>
-                            ) : null}
+                        <View style={styles.center}>
+                            <Text style={styles.total}>{sum}</Text>
+                            {centerLabel ? <Text style={styles.totalLabel}>{centerLabel}</Text> : null}
                         </View>
                     )}
                 />
             </View>
 
             <View style={styles.legend}>
-                {data.map((item) => (
-                    <View key={item.label} style={styles.legendItem}>
-                        <View style={[styles.dot, { backgroundColor: item.color }]} />
-                        <Text style={styles.legendLabel} numberOfLines={1}>
-                            {item.label}
-                        </Text>
-                        <Text style={styles.legendValue}>{item.value}</Text>
+                {data.map((slice) => (
+                    <View key={slice.label} style={styles.legendItem}>
+                        <View style={[styles.dot, { backgroundColor: slice.color }]} />
+                        <Text style={styles.legendLabel} numberOfLines={1}>{slice.label}</Text>
+                        <Text style={styles.legendValue}>{slice.value}</Text>
                     </View>
                 ))}
             </View>
@@ -52,29 +50,25 @@ export default function CercleChart({
 }
 
 const styles = StyleSheet.create({
-    chart: {
-        flexDirection: "column",
+    container: {
         gap: 20,
     },
-
     pie: {
         alignItems: "center",
     },
-
-    chartCenter: {
+    center: {
         alignItems: "center",
     },
-    chartTotal: {
+    total: {
         fontSize: 22,
         fontWeight: "700",
         color: "#111827",
     },
-    chartTotalLabel: {
+    totalLabel: {
         fontSize: 12,
         color: "#6B7280",
     },
     legend: {
-        flex: 1,
         gap: 10,
     },
     legendItem: {

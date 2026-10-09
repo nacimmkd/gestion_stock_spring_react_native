@@ -1,52 +1,18 @@
-import {ActivityIndicator, ScrollView, StyleSheet, Text, View} from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import StatCard from "../../../shared/components/StatCard";
 import CercleChart from "../../../shared/components/CercleChart";
-import {useFetch} from "../../../shared/hooks/useFetch";
-import {Dashboard} from "../../../shared/api/types";
-import {getDashboard} from "../api";
-import {useEffect, useState} from "react";
-import AlertDialog from "../../../shared/components/AlertDialog";
-
-
-const COLORS = ["#374151", "#FCD34D", "#FCA5A5", "#86EFAC", "#93C5FD", "#C4B5FD"];
+import LoadingState from "../../../shared/components/LoadingState";
+import Error from "../../../shared/components/Error";
+import { useFetch } from "../../../shared/hooks/useFetch";
+import type { CategoryCount } from "../../../shared/api/types";
+import { getDashboard } from "../api";
 
 
 export default function DashboardScreen() {
+    const { data, loading, error } = useFetch(getDashboard);
 
-    const { data, loading, error } = useFetch<Dashboard>(
-        () => getDashboard(), []
-    );
-    const [message, setMessage] = useState<string | null>(null);
-
-    const pieData = (data?.productsByCategory ?? []).map((item, index) => ({
-        value: item.count ?? 0,
-        color: COLORS[index % COLORS.length],
-        label: item.category ?? "",
-    }));
-
-    useEffect(() => {
-        if (error) setMessage(error);
-    }, [error]);
-
-    if (loading) {
-        return (
-            <View style={styles.centered}>
-                <ActivityIndicator />
-            </View>
-        );
-    }
-
-    if (error || !data) {
-        return (
-            <AlertDialog
-                visible={message !== null}
-                title="Erreur"
-                message={message ?? ""}
-                onConfirm={() => setMessage(null)}
-            />
-        );
-    }
-
+    if (loading && !data) return <LoadingState />;
+    if (!data) return <Error error={error ?? "Données indisponibles"} />;
 
     return (
         <ScrollView
@@ -68,7 +34,7 @@ export default function DashboardScreen() {
             <View style={styles.card}>
                 <Text style={styles.sectionTitle}>Produits par catégorie</Text>
                 <CercleChart
-                    data={pieData}
+                    data={toChartData(data.productsByCategory)}
                     total={data.totalProducts}
                     centerLabel="produits"
                 />
@@ -76,6 +42,19 @@ export default function DashboardScreen() {
         </ScrollView>
     );
 }
+
+
+
+const CHART_COLORS = ["#374151", "#FCD34D", "#FCA5A5", "#86EFAC", "#93C5FD", "#C4B5FD"];
+
+function toChartData(categories: CategoryCount[] = []) {
+    return categories.map((item, index) => ({
+        label: item.category ?? "",
+        value: item.count ?? 0,
+        color: CHART_COLORS[index % CHART_COLORS.length],
+    }));
+}
+
 
 const styles = StyleSheet.create({
     container: {
@@ -85,16 +64,6 @@ const styles = StyleSheet.create({
     content: {
         padding: 16,
         gap: 12,
-    },
-    centered: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#F3F4F6",
-    },
-    error: {
-        color: "#B91C1C",
-        fontSize: 16,
     },
     title: {
         fontSize: 22,

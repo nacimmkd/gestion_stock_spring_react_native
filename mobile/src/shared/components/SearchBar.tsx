@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 type Props = {
     onPress: (text: string) => void;
@@ -22,6 +22,7 @@ export default function SearchBar({
         onPress(searchInput);
     }
 
+
     return (
         <View style={styles.container}>
             <TextInput
@@ -35,10 +36,7 @@ export default function SearchBar({
                 returnKeyType="search"
                 onSubmitEditing={handlePress}
             />
-            <Pressable
-                onPress={handlePress}
-                accessibilityLabel="Effacer la recherche"
-            >
+            <Pressable onPress={handlePress}>
                 <Ionicons name="search" size={20} color="#6B7280" />
             </Pressable>
         </View>
