@@ -94,6 +94,10 @@ public class ProductService {
         this.productRepository.delete(product);
     }
 
+    public long countOutOfStock() {
+        return this.productRepository.countOutOfStock();
+    }
+
 
     private Product getProductByIdOrThrow(UUID productId) {
         return this.productRepository.findById(productId)

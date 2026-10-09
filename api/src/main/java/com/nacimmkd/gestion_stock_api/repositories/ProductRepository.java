@@ -47,4 +47,11 @@ public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpec
         ORDER BY COUNT(p) DESC
         """)
     List<CategoryCount> countByCategory();
+
+    @Query("""
+        SELECT COUNT(p)
+        FROM Product p
+        WHERE p.quantity = 0
+        """)
+    long countOutOfStock();
 }
