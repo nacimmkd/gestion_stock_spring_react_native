@@ -16,6 +16,7 @@ Application de gestion de stock composée d'une API REST et d'une application mo
 - Entrées et sorties de stock
 - Statut de stock
 - Tableau de bord
+- Notification local des produit en rupture
 
 ## Démarrage rapide
 
