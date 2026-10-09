@@ -50,6 +50,10 @@ public class ProductController {
         return ResponseEntity.ok(this.productService.countOutOfStock());
     }
 
+    @GetMapping("/status-counts")
+    public ResponseEntity<List<StockCountDto>> countByStatus() {
+        return ResponseEntity.ok(this.productService.countByStatus());
+    }
 
     @PostMapping
     public ResponseEntity<ProductDetailsDto> createProduct(

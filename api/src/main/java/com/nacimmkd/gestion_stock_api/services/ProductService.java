@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -96,6 +97,11 @@ public class ProductService {
 
     public long countOutOfStock() {
         return this.productRepository.countOutOfStock();
+    }
+
+    public List<StockCountDto> countByStatus() {
+        var stats = this.productRepository.getStockStats();
+        return StockCountDto.of(stats);
     }
 
 
