@@ -1,13 +1,13 @@
 import {StyleSheet, FlatList, View, Text, Pressable, ActivityIndicator} from 'react-native';
-import {ProductSummary, StockStatus} from '../api/types';
+import {ProductSummary, StockStatus} from '../../../shared/api/types';
 import ProductCard from '../components/ProductCard';
-import SearchBar from '../components/SearchBar';
+import SearchBar from '../../../shared/components/SearchBar';
 import StatusFilter from "../components/StatusFilter";
 import {useEffect, useState} from "react";
-import {useFetch} from "../hooks/useFetch";
-import { getProducts } from "../services/ProductsService";
+import {useFetch} from "../../../shared/hooks/useFetch";
+import { getProducts } from "../api";
 import {useNavigation} from "@react-navigation/native";
-import AlertDialog from "../components/AlertDialog";
+import AlertDialog from "../../../shared/components/AlertDialog";
 
 export default function ProductListScreen () {
 

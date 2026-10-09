@@ -1,11 +1,11 @@
 import {ActivityIndicator, ScrollView, StyleSheet, Text, View} from "react-native";
-import StatCard from "../components/StatCard";
-import CercleChart from "../components/CercleChart";
-import {useFetch} from "../hooks/useFetch";
-import {Dashboard} from "../api/types";
-import {getDashboard} from "../services/DashboardService";
+import StatCard from "../../../shared/components/StatCard";
+import CercleChart from "../../../shared/components/CercleChart";
+import {useFetch} from "../../../shared/hooks/useFetch";
+import {Dashboard} from "../../../shared/api/types";
+import {getDashboard} from "../api";
 import {useEffect, useState} from "react";
-import AlertDialog from "../components/AlertDialog";
+import AlertDialog from "../../../shared/components/AlertDialog";
 
 
 const COLORS = ["#374151", "#FCD34D", "#FCA5A5", "#86EFAC", "#93C5FD", "#C4B5FD"];

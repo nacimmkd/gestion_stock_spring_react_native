@@ -27,7 +27,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "generate:types": "openapi-typescript http://localhost:8080/v3/api-docs -o src/api/generated/schema.ts"
+    "generate:types": "openapi-typescript http://localhost:8080/v3/api-docs -o src/shared/api/generated/schema.ts"
   },
   "private": true
 }

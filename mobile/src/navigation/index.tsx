@@ -1,13 +1,13 @@
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import ProductListScreen from "../screens/ProductListScreen";
-import ProductDetailsScreen from "../screens/ProductDetailsScreen";
+import ProductListScreen from "../features/products/screens/ProductListScreen";
+import ProductDetailsScreen from "../features/products/screens/ProductDetailsScreen";
 import {createStaticNavigation, type StaticParamList} from "@react-navigation/native";
-import DashboardScreen from "../screens/DashboardScreen";
-import ProductCreateScreen from "../screens/ProductCreateScreen";
+import DashboardScreen from "../features/dashboard/screens/DashboardScreen";
+import ProductCreateScreen from "../features/products/screens/ProductCreateScreen";
 import {Feather} from "@expo/vector-icons";
-import Logo from "../components/Logo";
-import ProductUpdateScreen from "../screens/ProductUpdateRequest";
+import Logo from "../shared/components/Logo";
+import ProductUpdateScreen from "../features/products/screens/ProductUpdateRequest";
 
 const Tabs = createBottomTabNavigator({
     screenOptions: {

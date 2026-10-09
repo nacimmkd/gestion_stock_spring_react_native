@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useNavigation, type StaticScreenProps } from "@react-navigation/native";
-import TextField from "../components/TextField";
-import OptionPicker from "../components/OptionPicker";
-import Button from "../components/Button";
-import AlertDialog from "../components/AlertDialog";
-import { useFetch } from "../hooks/useFetch";
-import type { Category, ProductDetails } from "../api/types";
-import { getCategory } from "../services/CategoryService";
-import { getProduct, updateProduct } from "../services/ProductsService";
-import { productUpdateSchema } from "../validation/productSchema";
+import TextField from "../../../shared/components/TextField";
+import OptionPicker from "../../../shared/components/OptionPicker";
+import Button from "../../../shared/components/Button";
+import AlertDialog from "../../../shared/components/AlertDialog";
+import { useFetch } from "../../../shared/hooks/useFetch";
+import type { Category, ProductDetails } from "../../../shared/api/types";
+import { getCategory } from "../../categories/api";
+import { getProduct, updateProduct } from "../api";
+import { productUpdateSchema } from "../schema";
 
 type Props = StaticScreenProps<{ productId: string }>;
 

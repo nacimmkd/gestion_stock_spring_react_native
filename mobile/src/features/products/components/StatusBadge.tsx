@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import type { StockStatus } from "../api/types";
+import type { StockStatus } from "../../../shared/api/types";
 
 type Props = {
     status?: StockStatus;

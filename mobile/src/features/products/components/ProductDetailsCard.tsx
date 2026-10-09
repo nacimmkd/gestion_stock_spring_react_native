@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import type { ProductDetails } from "../api/types";
+import type { ProductDetails } from "../../../shared/api/types";
 import StatusBadge from "./StatusBadge";
 
 type Props = {

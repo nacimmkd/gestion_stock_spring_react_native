@@ -1,4 +1,4 @@
-import {api} from "../config/clinet";
+import {api} from "../../shared/api/client";
 import {
     ProductCreateRequest,
     ProductDetails,
@@ -6,7 +6,7 @@ import {
     ProductUpdateRequest,
     ProductFilters,
     StockMovement, PagedProduct
-} from "../api/types";
+} from "../../shared/api/types";
 
 
 export async function getProducts(filters: ProductFilters = {}):Promise<PagedProduct> {

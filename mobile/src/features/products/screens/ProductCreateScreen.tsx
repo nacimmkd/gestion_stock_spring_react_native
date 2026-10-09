@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import TextField from "../components/TextField";
-import OptionPicker from "../components/OptionPicker";
-import Button from "../components/Button";
-import AlertDialog from "../components/AlertDialog";
-import { useFetch } from "../hooks/useFetch";
-import type { Category } from "../api/types";
-import { getCategory } from "../services/CategoryService";
-import { createProduct } from "../services/ProductsService";
-import { productSchema } from "../validation/productSchema";
+import TextField from "../../../shared/components/TextField";
+import OptionPicker from "../../../shared/components/OptionPicker";
+import Button from "../../../shared/components/Button";
+import AlertDialog from "../../../shared/components/AlertDialog";
+import { useFetch } from "../../../shared/hooks/useFetch";
+import type { Category } from "../../../shared/api/types";
+import { getCategory } from "../../categories/api";
+import { createProduct } from "../api";
+import { schema } from "../schema";
 
 type FormValues = {
     name: string;
@@ -54,7 +54,7 @@ export default function ProductCreateScreen() {
     }
 
     async function handleSubmit(): Promise<void> {
-        const result = productSchema.safeParse(values);
+        const result = schema.safeParse(values);
 
         if (!result.success) {
             const found: FieldErrors = {};

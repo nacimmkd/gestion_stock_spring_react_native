@@ -9,13 +9,13 @@ import {
     View,
 } from "react-native";
 import { useNavigation, type StaticScreenProps } from "@react-navigation/native";
-import type { ProductDetails, StockMovement } from "../api/types";
-import { useFetch } from "../hooks/useFetch";
-import { deleteProduct, getProduct, updateStock } from "../services/ProductsService";
+import type { ProductDetails, StockMovement } from "../../../shared/api/types";
+import { useFetch } from "../../../shared/hooks/useFetch";
+import { deleteProduct, getProduct, updateStock } from "../api";
 import ProductDetailsCard from "../components/ProductDetailsCard";
-import StatCard from "../components/StatCard";
-import AlertDialog from "../components/AlertDialog";
-import Button from "../components/Button";
+import StatCard from "../../../shared/components/StatCard";
+import AlertDialog from "../../../shared/components/AlertDialog";
+import Button from "../../../shared/components/Button";
 
 type Props = StaticScreenProps<{ productId: string }>;
 

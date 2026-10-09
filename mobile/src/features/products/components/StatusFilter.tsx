@@ -1,9 +1,8 @@
-// src/components/StatusFilter.tsx
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import type { StockStatus } from '../api/types';
+import type { StockStatus } from '../../../shared/api/types';
 
 type Props = {
-    value: StockStatus | null; // null = « Tous »
+    value: StockStatus | null;
     onChange: (status: StockStatus | null) => void;
 };
 

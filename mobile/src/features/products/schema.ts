@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const productSchema = z.object({
+export const schema = z.object({
     name: z.string().trim().min(1, "Le nom est obligatoire"),
     reference: z.string().trim().min(1, "La référence est obligatoire"),
     categoryId: z.string({ message: "Choisis une catégorie" }),
@@ -9,4 +9,4 @@ export const productSchema = z.object({
     description: z.string().trim().max(1000, "1000 caractères maximum"),
 });
 
-export const productUpdateSchema = productSchema.omit({ quantity: true });
+export const productUpdateSchema = schema.omit({ quantity: true });
