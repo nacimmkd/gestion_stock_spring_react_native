@@ -5,7 +5,7 @@ import {
     ProductPage,
     ProductUpdateRequest,
     ProductFilters,
-    StockMovement, PagedProduct
+    StockMovement, PagedProduct, StockCount
 } from "../../shared/api/types";
 
 
@@ -43,5 +43,10 @@ export async function updateStock(
 
 export async function countOutOfStock(): Promise<number> {
     const { data } = await api.get<number>(`/products/out-of-stock/count`);
+    return data;
+}
+
+export async function countsByStatus(): Promise<StockCount[]> {
+    const { data } = await api.get<StockCount[]>(`/products/status-counts`);
     return data;
 }

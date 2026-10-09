@@ -7,10 +7,13 @@ import type { ProductSummary } from "../../../shared/api/types";
 import ProductCard from "../components/ProductCard";
 import StatusFilter from "../components/StatusFilter";
 import { useProductList } from "../hooks/useProductList";
+import {countsByStatus} from "../api";
+import {useFetch} from "../../../shared/hooks/useFetch";
 
 export default function ProductListScreen() {
     const navigation = useNavigation();
     const list = useProductList();
+    const statusCounts = useFetch(countsByStatus, []);
 
     function openProduct(product: ProductSummary): void {
         if (product.id) navigation.navigate("ProductDetails", { productId: product.id });
@@ -20,7 +23,11 @@ export default function ProductListScreen() {
         <View style={styles.container}>
             <View style={styles.header}>
                 <SearchBar onPress={list.searchFor} />
-                <StatusFilter value={list.status} onChange={list.filterBy} />
+                <StatusFilter
+                    value={list.status}
+                    onChange={list.filterBy}
+                    counts={statusCounts.data ?? []}
+                />
             </View>
 
             <FlatList

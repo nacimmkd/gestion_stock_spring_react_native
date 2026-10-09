@@ -15,6 +15,7 @@ export type ProductUpdateRequest = Schemas['ProductUpdateRequest'];
 export type StockUpdateRequest = Schemas['StockUpdateRequest'];
 export type StockMovement = 'ENTREE' | 'SORTIE';
 export type PagedProduct = Schemas['PageProductSummaryDto'];
+export type StockCount = components["schemas"]["StockCountDto"];
 
 export interface ProductFilters {
     search?: string;

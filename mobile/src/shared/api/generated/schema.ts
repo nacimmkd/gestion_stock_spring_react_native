@@ -52,6 +52,38 @@ export interface paths {
         patch: operations["updateStock"];
         trace?: never;
     };
+    "/api/v1/products/status-counts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["countByStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/products/out-of-stock/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["countOutOfStock"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/dashboard": {
         parameters: {
             query?: never;
@@ -187,6 +219,12 @@ export interface components {
             sorted?: boolean;
             empty?: boolean;
             unsorted?: boolean;
+        };
+        StockCountDto: {
+            /** @enum {string} */
+            status?: "NORMAL" | "FAIBLE" | "RUPTURE";
+            /** Format: int64 */
+            count?: number;
         };
         CategoryCountDto: {
             category?: string;
@@ -354,6 +392,46 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ProductDetailsDto"];
+                };
+            };
+        };
+    };
+    countByStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StockCountDto"][];
+                };
+            };
+        };
+    };
+    countOutOfStock: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": number;
                 };
             };
         };
