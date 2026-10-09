@@ -20,6 +20,7 @@ Application mobile de gestion de stock : consultation et recherche des produits,
 - Détail d'un produit, avec entrée et sortie de stock.
 - Création, modification et suppression d'un produit, avec validation du formulaire.
 - Tableau de bord : chiffres clés et répartition des produits par catégorie.
+- Notifications locales des produits en rupture
 
 ## Démarrage
 
