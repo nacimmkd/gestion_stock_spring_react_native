@@ -1,6 +1,6 @@
 import { Pressable, View, Text, StyleSheet } from 'react-native';
 import { type ProductSummary } from '../../../shared/api/types';
-import StatusBadge from "./StatusBadge";
+import StatusBadge from "../../../shared/components/StatusBadge";
 
 type Props = {
     product: ProductSummary;

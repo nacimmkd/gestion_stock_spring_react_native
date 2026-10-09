@@ -5,7 +5,7 @@ import Button from "../../../shared/components/Button";
 import Error from "../../../shared/components/Error";
 import type { ProductSummary } from "../../../shared/api/types";
 import ProductCard from "../components/ProductCard";
-import StatusFilter from "../components/StatusFilter";
+import StockStatusFilter from "../components/StockStatusFilter";
 import { useProductList } from "../hooks/useProductList";
 import {countsByStatus} from "../api";
 import {useFetch} from "../../../shared/hooks/useFetch";
@@ -23,7 +23,7 @@ export default function ProductListScreen() {
         <View style={styles.container}>
             <View style={styles.header}>
                 <SearchBar onPress={list.searchFor} />
-                <StatusFilter
+                <StockStatusFilter
                     value={list.status}
                     onChange={list.filterBy}
                     counts={statusCounts.data ?? []}

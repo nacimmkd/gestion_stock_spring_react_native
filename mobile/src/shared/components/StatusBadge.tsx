@@ -1,5 +1,5 @@
-import Badge from "../../../shared/components/Badge";
-import type { StockStatus } from "../../../shared/api/types";
+import Badge from "./Badge";
+import type { StockStatus } from "../api/types";
 
 type Props = {
     status?: StockStatus;
