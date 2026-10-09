@@ -16,9 +16,6 @@ export type StockUpdateRequest = Schemas['StockUpdateRequest'];
 export type StockMovement = 'ENTREE' | 'SORTIE';
 export type PagedProduct = Schemas['PageProductSummaryDto'];
 
-export type ApiError = { message: string };
-export type ValidationErrors = Record<string, string>;
-
 export interface ProductFilters {
     search?: string;
     status?: StockStatus;
